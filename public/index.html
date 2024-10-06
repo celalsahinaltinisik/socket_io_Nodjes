@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+		body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+		#form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+		#input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+		#input:disabled {
+		background: #000000 !important;
+		}
+		#input:focus { outline: none; }
+		#form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+		#messages { list-style-type: none; margin: 0; padding: 0; }
+		#messages > li { padding: 0.5rem 1rem; }
+		#messages > li:nth-child(odd) { background: #efefef; }
+		.mation {color: white;background-color: black;font-size: larger;}
+    </style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  </head>
+  <body>
+<p id="head-mation" style="text-align: center;font-size: 22px;">Welcome @1231</p>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+	<select id="rooms">
+		<option value="">Join Rooms</option>
+		<option value="room1">Room-1</option>
+		<option value="room2">Room-2</option>
+	</select>
+      <input id="input" disabled autocomplete="off" /><button disabled >Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      	var socket = io('http://127.0.0.1:3000');
+		var messages = document.getElementById('messages');
+		var form = document.getElementById('form');
+		var input = document.getElementById('input');
+		var rooms = $('#rooms').find(":selected").val();
+		var name = '@' + generateRandomWord();
+		$('#head-mation').html('Welcome ' + name);
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			if (input.value) {
+				var rooms = $('#rooms').find(":selected").val();
+				socket.emit('send_server', {name: name, msg: input.value, room: rooms});
+				input.value = '';
+			}
+		});
+
+	socket.on('client', function(name, msg) {
+		const item = document.createElement('li');
+		item.textContent = name + ' ' + msg;
+
+		messages.appendChild(item);
+		window.scrollTo(0, document.body.scrollHeight);
+	});
+
+	//   Set room
+	var roomList = $.map($('#rooms option') ,function(option) {
+		if(option.value) {
+			return  option.value; 
+		}
+	});
+	$('#rooms').on('change', function (e) {
+		let optionSelected = $("option:selected", this);
+		var valueSelected = this.value;
+		if (!valueSelected) {
+			formDisable(true);
+			return;
+		}
+		socket.emit('join_room', {room_list: roomList, room: valueSelected});
+		formDisable(false);
+	});
+
+	const formDisable = (boolean) => {
+		$("input, button").prop( "disabled", boolean);
+	}
+
+	function generateRandomWord(minLength = 3, maxLength = 10) {
+		const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		let wordLength = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+		let word = "";
+		for (let i = 0; i < wordLength; i++) {
+			const randomIndex = Math.floor(Math.random() * letters.length);
+			word += letters[randomIndex];
+		}
+		return word;
+	}
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "csa_docker_web_app",
+  "repository": "https://github.com/celalsahinaltinisik/socketioAndNodjesMVC.git",
+  "license": "MIT",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.17.2",
+    "joi": "^17.9.2",
+    "mongodb": "^5.9.2",
+    "mongoose": "^6.13.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.7.5"
+  }
+}

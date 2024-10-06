@@ -1,0 +1,12 @@
+﻿version: '3.5'
+services:
+  server:
+    image: node:19-bullseye
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+    command: sh -c "npm install && npm start"
